@@ -36,7 +36,7 @@ def setup(app):
     # app.set_translator('latex', LaTeXNewFloatTranslator)
 
     app.add_latex_package('newfloat')
-    app.add_latex_package('newfloat')
+    app.add_latex_package('capt-of')
     app.add_latex_package('needspace')
 
     return {'version': '0.2'}
