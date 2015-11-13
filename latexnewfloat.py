@@ -1,14 +1,15 @@
-""" latexnewfloat.py extension for latex builder to replace 
+r""" latexnewfloat.py extension for latex builder to replace 
 literal-block environment by
 \captionof{literal-block-newfloat}{caption_title} command.
 For \captionof command (in capt-of pacakge), the new environment
 literal-block-newfloat should be configured by newfloat pagage instead of
 original float package.
+needspace package is also required to control pagebreak around caption.
+
 Usage:
   add following latex preambles for latex_elements['preamble'] in conf.py 
       'preamble': r'''
       % configure new literal-block-newfloat
-      \usepackage{newfloat}
       \DeclareFloatingEnvironment[name={Listing}]{literal-block-newfloat}
       % copy from sphinx.sty
       \ifx\thechapter\undefined
@@ -16,22 +17,29 @@ Usage:
       \else
         \SetupFloatingEnvironment{literal-block-newfloat}{within=chapter,placement=h}
       \fi
-      \usepackage{capt-of}
-'''
-Run sphinx with builder name 'latexnewfloat'
+      '''
+  Run sphinx with builder name 'latexnewfloat'
     python -m sphinx.__init__ -b latexnewfloat {intpudir} {outputdir}
-or
-- add entry in makefile
-- override original latex builder entry using app.set_translator
+  or
+  - add entry in makefile
+  - override original latex builder entry using app.set_translator
 """
 
 from sphinx.writers.latex import LaTeXTranslator
 from sphinx.builders.latex import LaTeXBuilder
 
 def setup(app):
+    app.add_config_value('latexnewfloat_needspaceforcaption', '3\\baselineskip', 'env')
     app.add_builder(LaTeXNewFloatBuilder)
     app.set_translator('latexnewfloat', LaTeXNewFloatTranslator)
-    return {'version': '0.1'}
+    # uncomment if you want to override stadnard latex builder
+    # app.set_translator('latex', LaTeXNewFloatTranslator)
+
+    app.add_latex_package('newfloat')
+    app.add_latex_package('newfloat')
+    app.add_latex_package('needspace')
+
+    return {'version': '0.2'}
 
 # inherited from LaTeXBuilder
 class LaTeXNewFloatBuilder(LaTeXBuilder):
@@ -47,6 +55,9 @@ class LaTeXNewFloatTranslator(LaTeXTranslator):
     def visit_caption(self, node):
         self.in_caption += 1
         if self.in_container_literal_block:
+            self.body.append('\\needspace{' +
+                    self.builder.config.latexnewfloat_needspaceforcaption + '}')
+            self.body.append('\\vspace{0.5\\baselineskip}')
             self.body.append('\\captionof{literal-block-newfloat}{')
         else:
             self.body.append('\\caption{')
