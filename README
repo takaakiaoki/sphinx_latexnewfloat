@@ -1,8 +1,21 @@
+sphinx_latexfloat version 0.2
+
+Takaaki AOKI
+
 sphinx_latexnewfloat extends Sphinx (http://sphinx-doc.org/) latex builder to
 replace literal-block environment and \caption command by inserting inline \captionof command.
 For \captionof command, newfloat and capt-of packages are required instead of legacy float package.
 This extention may help when one inserts a long source code using code-block or literalinclude directive
 with **caption option** and one needs page break within the literal code.  
+
+This extention requires following latex pacages
+
+* newfloat
+* capt-of
+* needspace
+
+According to CTAN, these packages are included in recent TexLive and MikeTex,
+so special operations will not be required for LaTeX.
 
 Detail description about this extension found at 
   http://qiita.com/takaakiaoki/items/1c24651d23b666eb7ecd

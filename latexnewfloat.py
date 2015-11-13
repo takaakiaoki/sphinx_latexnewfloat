@@ -1,6 +1,6 @@
 r""" latexnewfloat.py extension for latex builder to replace 
-literal-block environment by
-\captionof{literal-block-newfloat}{caption_title} command.
+literal-block environment by \captionof{literal-block-newfloat}{caption_title} command.
+
 For \captionof command (in capt-of pacakge), the new environment
 literal-block-newfloat should be configured by newfloat pagage instead of
 original float package.
@@ -9,9 +9,9 @@ needspace package is also required to control pagebreak around caption.
 Usage:
   add following latex preambles for latex_elements['preamble'] in conf.py 
       'preamble': r'''
-      % configure new literal-block-newfloat
+      % configure new literal-block-newfloat. You may change `name` option 
       \DeclareFloatingEnvironment[name={Listing}]{literal-block-newfloat}
-      % copy from sphinx.sty
+      % change within option in similar to literal-block in sphinx.sty
       \ifx\thechapter\undefined
           \SetupFloatingEnvironment{literal-block-newfloat}{within=section,placement=h}
       \else
@@ -22,7 +22,7 @@ Usage:
     python -m sphinx.__init__ -b latexnewfloat {intpudir} {outputdir}
   or
   - add entry in makefile
-  - override original latex builder entry using app.set_translator
+  - you may also override original latex builder entry using app.set_translator
 """
 
 from sphinx.writers.latex import LaTeXTranslator
