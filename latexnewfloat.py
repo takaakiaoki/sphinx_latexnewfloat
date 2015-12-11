@@ -1,26 +1,29 @@
 r""" latexnewfloat.py extension for latex builder to replace 
-literal-block environment by \captionof{literal-block-newfloat}{caption_title} command.
+literal-block environment by \captionof{LiteralBlockNewFloat}{caption_title} command.
 
 For \captionof command (in capt-of pacakge), the new environment
-literal-block-newfloat should be configured by newfloat pagage instead of
+LiteralBlockNewFloat should be configured by newfloat pagage instead of
 original float package.
-needspace package is required, and  \literalblockneedspace and \literalblockcaptiontopvspace are introduce are introduced in order to control pagebreak around caption.
+needspace package is required, and  \literalblockneedspace and \literalblockcaptionaboveskip
+are introduced in order to control pagebreak around caption.
 
 Usage:
   add following latex preambles for latex_elements['preamble'] in conf.py
       'preamble': r'''
-      % configure new literal-block-newfloat. You may change `name` option
-      \DeclareFloatingEnvironment[name={Listing}]{literal-block-newfloat}
+      % declare new LiteralBlockNewFloat. You may change `name` option
+      \DeclareFloatingEnvironment{LiteralBlockNewFloat}
+      % confiure additional options
+      \SetupFloatingEnvironment{LiteralBlockNewFloat}{name=Listing,placement=h,fileext=loc}
       % change within option in similar to literal-block in sphinx.sty
       \ifx\thechapter\undefined
-          \SetupFloatingEnvironment{literal-block-newfloat}{within=section,placement=h}
+          \SetupFloatingEnvironment{LiteralBlockNewFloat}{within=section}
       \else
-        \SetupFloatingEnvironment{literal-block-newfloat}{within=chapter,placement=h}
+        \SetupFloatingEnvironment{LiteralBlockNewFloat}{within=chapter}
       \fi
       % if the left page space is less than \literalblockneedsapce, insert page-break
       \newcommand{\literalblockneedspace}{5\baselineskip}
       % margin before the caption of literal-block
-      \newcommand{\literalblockcaptiontopvspace}{0.5\baselineskip}
+      \newcommand{\literalblockcaptionaboveskip}{0.5\baselineskip}
       '''
   Run sphinx with builder name 'latexnewfloat'
     python -m sphinx.__init__ -b latexnewfloat {intpudir} {outputdir}
@@ -42,7 +45,7 @@ def setup(app):
     app.add_latex_package('capt-of')
     app.add_latex_package('needspace')
 
-    return {'version': '0.2'}
+    return {'version': '0.3'}
 
 # inherited from LaTeXBuilder
 class LaTeXNewFloatBuilder(LaTeXBuilder):
@@ -59,8 +62,8 @@ class LaTeXNewFloatTranslator(LaTeXTranslator):
         self.in_caption += 1
         if self.in_container_literal_block:
             self.body.append('\\needspace{\\literalblockneedspace}')
-            self.body.append('\\vspace{\\literalblockcaptiontopvspace}')
-            self.body.append('\\captionof{literal-block-newfloat}{')
+            self.body.append('\\vspace{\\literalblockcaptionaboveskip}')
+            self.body.append('\\captionof{LiteralBlockNewFloat}{')
         else:
             self.body.append('\\caption{')
 
